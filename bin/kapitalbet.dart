@@ -2,25 +2,29 @@ import 'dart:convert';
 import 'dart:io';
 import "package:http/http.dart" as http;
 
-main() {
-  obtenertpartidostemporada();
+main() async {
+  obtenerpartidostemporada();
 }
 
-obtenertpartidostemporada() async {
-  var headers = {
-    'x-rapidapi-key': '906c644d50b216417ceedc1f2248a1b7',
-    'x-rapidapi-host': 'v3.football.api-sports.io'
-  };
-  var request = http.Request(
-      'GET', Uri.parse('https://v3.football.api-sports.io/leagues'));
+String? liga;
+String? temporada;
 
-  request.headers.addAll(headers);
-
-  http.StreamedResponse response = await request.send();
-
-  if (response.statusCode == 200) {
-    print(await response.stream.bytesToString());
-  } else {
-    print(response.reasonPhrase);
+obtenerpartidostemporada() async {
+  Uri url = Uri.parse("https://v2.nba.api-sports.io/games?date=2022-03-09");
+  var respuesta = await http.get(url, headers: {
+    'x-rapidapi-host': 'v2.nba.api-sports.io',
+    'x-rapidapi-key': '906c644d50b216417ceedc1f2248a1b7'
+  });
+  try {
+    if (respuesta.statusCode == 200) {
+      var partidos = json.decode(respuesta.body);
+      return partidos;
+    } else if (respuesta.statusCode == 404) {
+      throw ("Los datos no son correctos");
+    } else
+      throw ("Ha habido un error de conexión");
+  } catch (e) {
+    stdout.writeln(e);
+    main();
   }
 }
