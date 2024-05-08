@@ -1,14 +1,15 @@
 import 'dart:io';
+import 'partido.dart';
 import 'usuario.dart';
 
 class App {
   insertarMenu() async {
     int? opcion;
     do {
-      stdout.writeln('Elige opcion 1 u opcion 2');
+      stdout.writeln('1 Crear Usuario ln 2 Log in');
       String respuesta = stdin.readLineSync() ?? 'e';
       opcion = int.tryParse(respuesta);
-    } while (opcion == null || opcion != 1 && opcion != 2 && opcion != 3);
+    } while (opcion == null || opcion != 1 && opcion != 2);
     switch (opcion) {
       case 1:
         crearUsuario();
@@ -28,32 +29,11 @@ class App {
     stdout.writeln('introduce una contraseña');
     usuario.password = stdin.readLineSync();
     usuario.insertarUsuario();
+    menuLogueado(usuario);
   }
 
   menuLogueado(Usuario usuario) async {
-    int? respuesta2;
-    String? nombre = usuario.nombre;
-    do {
-      stdout.writeln('Hola $nombre,'
-          '¿Qué quieres hacer 1 listar usuarios, 2 listar tus mascotas, 3 crear mascota?');
-      String respuesta = stdin.readLineSync() ?? 'e';
-      respuesta2 = int.tryParse(respuesta);
-    } while (respuesta2 == null ||
-        respuesta2 != 1 && respuesta2 != 2 && respuesta2 != 3);
-    switch (respuesta2) {
-      case 1:
-        await listarUsuario();
-        menuLogueado(usuario);
-        break;
-      case 2:
-        print(usuario.idusuario);
-        await listarMascotasUsuario(usuario.idusuario);
-        menuLogueado(usuario);
-        break;
-      case 3:
-        print('adios');
-        exit;
-    }
+    await Partido().imprimirpartidos();
   }
 
   login() async {
@@ -66,7 +46,7 @@ class App {
     if (resultado == false) {
       stdout.writeln('nombre o contraseña incorrectos');
     } else {
-      menuLogueado(resultado);
+      menuLogueado(usuario);
     }
   }
 }

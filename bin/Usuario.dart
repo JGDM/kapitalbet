@@ -1,5 +1,4 @@
 import 'package:mysql1/mysql1.dart';
-import 'App.dart';
 import 'Database.dart';
 
 class Usuario {
@@ -64,7 +63,6 @@ class Usuario {
       var resultado = await conn
           .query('SELECT * FROM usuarios WHERE nombre = ?', [this._nombre]);
       Usuario usuario = Usuario.fromMap(resultado.first);
-      print(usuario.idusuario);
       if (this._password == usuario.password) {
         print("Bienvenido $_nombre");
         return usuario;

@@ -28,19 +28,17 @@ class Partido {
     estadisticas = {
       'puntosLocal': dato['scores']['home']['points'],
       'puntosVisitante': dato['scores']['visitors']['points'],
-      'ganadosLocal': dato['scores']['home']['win'],
-      'perdidosLocal': dato['scores']['home']['loss'],
-      'ganadosVisitante': dato['scores']['visitors']['win'],
-      'perdidosVisitante': dato['scores']['visitors']['loss'],
       'lineasPuntosLocal': dato['scores']['home']['linescore'],
       'lineasPuntosVisitante': dato['scores']['visitors']['linescore'],
-      'tiemposEmpatados': dato['timesTied'],
-      'cambiosLider': dato['leadChanges'],
     };
   }
 
   obtenerpartidostemporada() async {
-    Uri url = Uri.parse("https://v2.nba.api-sports.io/games?date=2023-02-03");
+    String? fechapartido;
+    stdout.writeln('Introduce la fecha en formato AAAA-MM-DD');
+    fechapartido = stdin.readLineSync() ?? 'e';
+    Uri url =
+        Uri.parse("https://v2.nba.api-sports.io/games?date=$fechapartido");
     var respuesta = await http.get(url, headers: {
       'x-rapidapi-host': 'v2.nba.api-sports.io',
       'x-rapidapi-key': '906c644d50b216417ceedc1f2248a1b7'
@@ -67,7 +65,6 @@ class Partido {
     try {
       List<Partido> partidos = await obtenerpartidostemporada();
       for (var partido in partidos) {
-        print('Liga: ${partido.league}');
         print('Temporada: ${partido.season}');
         print('Fecha de inicio: ${partido.fechaInicio}');
         print('Estadio: ${partido.estadio}');
@@ -76,27 +73,38 @@ class Partido {
         print('Equipo visitante: ${partido.equipoVisitante}');
         print('Estadísticas:');
         print(
-            ' - Puntos del equipo local: ${partido.estadisticas?["puntosLocal"]}');
+            ' - Puntos de ${partido.equipoLocal}: ${partido.estadisticas?["puntosLocal"]}');
         print(
-            ' - Puntos del equipo visitante: ${partido.estadisticas?['puntosVisitante']}');
+            ' - Puntos de ${partido.equipoVisitante} : ${partido.estadisticas?['puntosVisitante']}');
         print(
-            ' - Ganados del equipo local: ${partido.estadisticas?['ganadosLocal']}');
+            ' - Puntos en cada cuarto del equipo local: ${partido.estadisticas?['lineasPuntosLocal']}');
         print(
-            ' - Perdidos del equipo local: ${partido.estadisticas?['perdidosLocal']}');
-        print(
-            ' - Ganados del equipo visitante: ${partido.estadisticas?['ganadosVisitante']}');
-        print(
-            ' - Perdidos del equipo visitante: ${partido.estadisticas?['perdidosVisitante']}');
-        print(
-            ' - Líneas de puntos del equipo local: ${partido.estadisticas?['lineasPuntosLocal']}');
-        print(
-            ' - Líneas de puntos del equipo visitante: ${partido.estadisticas?['lineasPuntosVisitante']}');
-        print(
-            ' - Veces empatados: ${partido.estadisticas?['tiemposEmpatados']}');
-        print(' - Cambios de líder: ${partido.estadisticas?['cambiosLider']}');
+            ' - Puntos en cada cuarto del equipo visitante: ${partido.estadisticas?['lineasPuntosVisitante']}');
+        if (partido.estadisticas?["puntosLocal"] >
+            partido.estadisticas?['puntosVisitante']) {
+          print(
+              'El equipo ganador es ${partido.equipoLocal} por $diferenciapuntos()');
+        } else
+          print(
+              'El ganador es ${partido.equipoVisitante} por $diferenciapuntos() ');
       }
     } catch (e) {
       print('Error: $e');
+    }
+  }
+
+  diferenciapuntos(estadisticas) {
+    int? resultado;
+    if (estadisticas?["puntosLocal"] > estadisticas["puntosVisitante"]) {
+      resultado =
+          (estadisticas["puntosLocal"]) - (estadisticas["puntosVisitante"]);
+      print(resultado);
+      return resultado;
+    } else {
+      resultado =
+          (estadisticas?["puntosVisitante"]) - (estadisticas?["puntosLocal"]);
+      print(resultado);
+      return resultado;
     }
   }
 }

@@ -1,5 +1,8 @@
-import 'partido.dart';
+import 'Database.dart';
 
-void main() {
-  Partido().imprimirpartidos();
+import 'App.dart';
+
+void main() async {
+  await Database().instalacion();
+  App().insertarMenu();
 }
