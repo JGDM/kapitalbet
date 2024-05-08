@@ -35,7 +35,8 @@ class Partido {
 
   obtenerpartidostemporada() async {
     String? fechapartido;
-    stdout.writeln('Introduce la fecha en formato AAAA-MM-DD');
+    stdout.writeln(
+        'Hola Máquina, introduce una fecha en formato AAAA-MM-DD y obtendrás los partidos de ese día junto con las puntuaciones');
     fechapartido = stdin.readLineSync() ?? 'e';
     Uri url =
         Uri.parse("https://v2.nba.api-sports.io/games?date=$fechapartido");
@@ -47,7 +48,6 @@ class Partido {
       if (respuesta.statusCode == 200) {
         var datos = json.decode(respuesta.body);
         List<Partido> partidos = [];
-
         for (var elemento in datos['response']) {
           partidos.add(Partido.fromApi(elemento));
         }
@@ -65,6 +65,7 @@ class Partido {
     try {
       List<Partido> partidos = await obtenerpartidostemporada();
       for (var partido in partidos) {
+        var resultado = diferenciapuntos(partido.estadisticas);
         print('Temporada: ${partido.season}');
         print('Fecha de inicio: ${partido.fechaInicio}');
         print('Estadio: ${partido.estadio}');
@@ -82,28 +83,24 @@ class Partido {
             ' - Puntos en cada cuarto del equipo visitante: ${partido.estadisticas?['lineasPuntosVisitante']}');
         if (partido.estadisticas?["puntosLocal"] >
             partido.estadisticas?['puntosVisitante']) {
-          print(
-              'El equipo ganador es ${partido.equipoLocal} por $diferenciapuntos()');
+          print('El equipo ganador es ${partido.equipoLocal} por $resultado');
         } else
-          print(
-              'El ganador es ${partido.equipoVisitante} por $diferenciapuntos() ');
+          print('El ganador es ${partido.equipoVisitante} por $resultado ');
       }
     } catch (e) {
       print('Error: $e');
     }
   }
 
-  diferenciapuntos(estadisticas) {
+  int diferenciapuntos(estadisticas) {
+    int puntosLocal = estadisticas["puntosLocal"];
+    int puntosVisitante = estadisticas["puntosVisitante"];
     int? resultado;
-    if (estadisticas?["puntosLocal"] > estadisticas["puntosVisitante"]) {
-      resultado =
-          (estadisticas["puntosLocal"]) - (estadisticas["puntosVisitante"]);
-      print(resultado);
+    if (puntosLocal > puntosVisitante) {
+      resultado = puntosLocal - puntosVisitante;
       return resultado;
     } else {
-      resultado =
-          (estadisticas?["puntosVisitante"]) - (estadisticas?["puntosLocal"]);
-      print(resultado);
+      resultado = puntosVisitante - puntosLocal;
       return resultado;
     }
   }

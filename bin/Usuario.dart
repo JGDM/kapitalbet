@@ -2,26 +2,17 @@ import 'package:mysql1/mysql1.dart';
 import 'Database.dart';
 
 class Usuario {
-//Propiedades
   int? _idusuario;
   String? _nombre;
   String? _password;
-//getters y setters
-// Getter for _idusuario
+
   int? get idusuario => _idusuario;
-
-// Getter for _nombre
   String? get nombre => _nombre;
-
-// Setter for _nombre
   set nombre(String? value) {
     _nombre = value;
   }
 
-// Getter for _password
   String? get password => _password;
-
-// Setter for _password
   set password(String? value) {
     _password = value;
   }
@@ -30,7 +21,6 @@ class Usuario {
     _idusuario = value;
   }
 
-  //CONSTRUCTORES
   Usuario();
   Usuario.sql({idusuario, nombre, password}) {
     this._idusuario = idusuario;

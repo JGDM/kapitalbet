@@ -6,7 +6,7 @@ class App {
   insertarMenu() async {
     int? opcion;
     do {
-      stdout.writeln('1 Crear Usuario ln 2 Log in');
+      stdout.writeln('1 Crear Usuario o 2 Log in');
       String respuesta = stdin.readLineSync() ?? 'e';
       opcion = int.tryParse(respuesta);
     } while (opcion == null || opcion != 1 && opcion != 2);
